@@ -18,4 +18,10 @@ export const LevelInfo = styled.div`
     top: 12px;
     left: 20px;
     font-size: 22px;
+    width: 70%;
+    align-items: center;
+
+    span:last-child {
+        font-size: 14px;
+    }
 `;

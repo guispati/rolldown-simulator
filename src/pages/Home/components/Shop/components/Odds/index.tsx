@@ -1,12 +1,11 @@
 import { Tier } from "./components/Tier";
 import { OddsContainer } from "./styles";
 import { ODDS_REROLL } from "../../../../../../data/constants.js";
+import { useContext } from "react";
+import { ShopContext } from "../../../../../../contexts/ShopContext";
 
-interface OddsProps {
-    level: number;
-}
-
-export function Odds({ level }: OddsProps) {
+export function Odds() {
+    const { level } = useContext(ShopContext);
     return (
         <OddsContainer>
             <Tier tier={1} odd={ODDS_REROLL[level as keyof typeof ODDS_REROLL][0]} />
