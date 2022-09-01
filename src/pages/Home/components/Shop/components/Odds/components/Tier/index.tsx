@@ -2,13 +2,14 @@ import { TierContainer, TierIcon } from "./styles";
 
 interface TierProps {
     tier: number;
+    odd: number;
 }
 
-export function Tier({ tier }: TierProps) {
+export function Tier({ tier, odd }: TierProps) {
     return (
         <TierContainer tier={tier}>
             <TierIcon tier={tier} />
-            <span>75%</span>
+            <span>{odd}%</span>
         </TierContainer>
     );
 }

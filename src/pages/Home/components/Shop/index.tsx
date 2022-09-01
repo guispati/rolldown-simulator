@@ -9,8 +9,8 @@ export function Shop() {
     return (
         <ShopContainer>
             <ShopLine>
-                <Level level={1} />
-                <Odds />
+                <Level level={2} />
+                <Odds level={2} />
                 <ShopButtons>
                     <UpgradeButton isActive={true} />
                     <RefreshButton isActive={true} />
