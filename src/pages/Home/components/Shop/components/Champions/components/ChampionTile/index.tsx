@@ -1,8 +1,8 @@
-import { ChampionCost, ChampionInfo, ChampionTileContainer, Trait, TraitBg, Traits } from "./styles";
+import { ChampionInfo, ChampionTileContainer, Trait, TraitBg, Traits } from "./styles";
 import ChampionTileAatrox from "../../../../../../../../assets/champions-tiles/aatrox.png";
 import TraitShimmerscale from "../../../../../../../../assets/traits/shimmerscale.png";
 import TraitWarrior from "../../../../../../../../assets/traits/warrior.png";
-import { GoldIcon } from "../../../../../GoldIcon/styles";
+import { GoldPrice } from "../../../../../../../../components/GoldPrice";
 
 export function ChampionTile() {
     return (
@@ -13,7 +13,7 @@ export function ChampionTile() {
                     <TraitBg>
                         <img src={TraitShimmerscale} />
                     </TraitBg>
-                    <span>Warrior</span>
+                    <span>Shimmerscale</span>
                 </Trait>
                 <Trait>
                     <TraitBg>
@@ -24,10 +24,7 @@ export function ChampionTile() {
             </Traits>
             <ChampionInfo>
                 <span>Aatrox</span>
-                <ChampionCost>
-                    <GoldIcon size={16} />
-                    <span>1</span>
-                </ChampionCost>
+                <GoldPrice price={4} />
             </ChampionInfo>
         </ChampionTileContainer>
     );

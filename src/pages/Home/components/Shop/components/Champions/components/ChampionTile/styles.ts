@@ -24,6 +24,13 @@ export const ChampionTileContainer = styled.div<ChampionTileContainerProps>`
         top: 6px;
         left: 4px;
     }
+
+    &:hover {
+        background: url(${hud});
+        ${props => props.tier === 0 && 'background-position: -464px -772px;'} /* No tile */
+        ${props => props.tier === 1 && 'background-position: -243px -430px;'}
+        cursor: pointer;
+    }
 `;
 
 export const Traits = styled.div`
@@ -61,10 +68,4 @@ export const ChampionInfo = styled.div`
     display: flex;
     justify-content: space-between;
     width: 100%;
-`;
-
-export const ChampionCost = styled.div`
-    display: flex;
-    gap: 5px;
-    padding-right: 15px;
 `;

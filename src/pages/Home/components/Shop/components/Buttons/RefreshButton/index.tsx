@@ -1,5 +1,5 @@
-import { GoldIcon } from "../../../../GoldIcon/styles";
-import { ButtonGoldPrice, ButtonInfo } from "../styles";
+import { GoldPrice } from "../../../../../../../components/GoldPrice";
+import { ButtonInfo } from "../styles";
 import { RefreshButtonContainer } from "./styles";
 
 interface RefreshButtonProps {
@@ -8,13 +8,10 @@ interface RefreshButtonProps {
 
 export function RefreshButton({ isActive }: RefreshButtonProps) {
     return (
-        <RefreshButtonContainer disabled={isActive}>
+        <RefreshButtonContainer disabled={!isActive}>
             <ButtonInfo>
                 <span>Atualizar</span>
-                <ButtonGoldPrice>
-                    <GoldIcon size={16} />
-                    <span>4</span>
-                </ButtonGoldPrice>
+                <GoldPrice price={2} />
             </ButtonInfo>
         </RefreshButtonContainer>
     )

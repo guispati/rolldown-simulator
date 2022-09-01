@@ -1,5 +1,5 @@
-import { GoldIcon } from "../../../../GoldIcon/styles";
-import { ButtonGoldPrice, ButtonInfo } from "../styles";
+import { GoldPrice } from "../../../../../../../components/GoldPrice";
+import { ButtonInfo } from "../styles";
 import { UpgradeButtonContainer } from "./styles";
 
 interface UpgradeButtonProps {
@@ -8,13 +8,10 @@ interface UpgradeButtonProps {
 
 export function UpgradeButton({ isActive }: UpgradeButtonProps) {
     return (
-        <UpgradeButtonContainer disabled={isActive}>
+        <UpgradeButtonContainer disabled={!isActive}>
             <ButtonInfo>
                 <span>Comprar EXP</span>
-                <ButtonGoldPrice>
-                    <GoldIcon size={16} />
-                    <span>4</span>
-                </ButtonGoldPrice>
+                <GoldPrice price={4} />
             </ButtonInfo>
         </UpgradeButtonContainer>
     )

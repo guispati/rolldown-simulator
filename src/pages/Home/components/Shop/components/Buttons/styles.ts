@@ -7,6 +7,14 @@ export const ButtonContainer = styled.button`
     margin: 0px 10px;
     position: relative;
     cursor: pointer;
+
+    &:disabled {
+        cursor: not-allowed;
+    }
+
+    &:hover {
+        cursor: pointer;
+    }
 `;
 
 export const ButtonInfo = styled.div`
@@ -19,11 +27,4 @@ export const ButtonInfo = styled.div`
     top: 20px;
     display: flex;
     flex-direction: column;
-
-`;
-
-export const ButtonGoldPrice = styled.div`
-    display: flex;
-    align-items: center;
-    gap: 5px;
 `;

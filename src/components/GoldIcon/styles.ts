@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import hud from '../../../../assets/hud.png';
+import hud from '../../assets/hud.png';
 
 interface GoldIconProps {
     size: number;
