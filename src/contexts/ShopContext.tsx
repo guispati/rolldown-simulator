@@ -4,7 +4,7 @@ import { EXP_THRESHOLD, ODDS_REROLL, TOTAL_CHAMPIONS_IN_POOL } from "../data/con
 import { CHAMPION_LIST } from "../data/champions";
 import { randomNumberInRange } from "../utils/utils";
 
-interface Champion {
+export interface Champion {
     championId: string;
     name: string;
     cost: number;
@@ -15,6 +15,7 @@ interface ShopContextType {
     xp: number;
     level: keyof typeof ODDS_REROLL;
     gold: number;
+    store: Champion[];
     buyExp: () => void;
 }
 
@@ -37,11 +38,7 @@ interface ChampionPoolType {
 }
 
 interface StoreType {
-    1: Champion;
-    2: Champion;
-    3: Champion;
-    4: Champion;
-    5: Champion;
+    champion: Champion[]
 }
 
 export const ShopContext = createContext({} as ShopContextType);
@@ -68,12 +65,12 @@ CHAMPION_LIST.map((champion) => {
 });
 
 export function ShopContextProvider({ children }: ShopContextProviderProps) {
-    const [level, setLevel] = useState<keyof typeof ODDS_REROLL>(2);
+    const [level, setLevel] = useState<keyof typeof ODDS_REROLL>(9);
     const [xp, setXp] = useState(0);
     const [gold, setGold] = useState(50);
     const [championPool, setChampionPool] = useState<ChampionPoolType>(ChampionPoolStatic);
 
-    const [store, setStore] = useState<StoreType>({} as StoreType);
+    const [store, setStore] = useState<Champion[]>([]);
 
     const levelNormalized = level as keyof typeof ODDS_REROLL;
 
@@ -104,15 +101,15 @@ export function ShopContextProvider({ children }: ShopContextProviderProps) {
         //         });
         //     }));
         // });
-        console.log(championPool);
-        reroll(6, championPool);
+        // reroll();
+        rerollShop();
     }, []);
 
     // useEffect(() => {
-        
+
     // }, [championPool]);
 
-    function getAllChampionsInPoolPerCost(championPool: ChampionPoolType, costRolled: keyof typeof championPool) {
+    function getAllChampionsInPoolPerCost(costRolled: keyof typeof championPool) {
         let allChampionsInPoolCostRolled = 0;
 
         championPool[costRolled].forEach((costQuantity) => {
@@ -122,45 +119,64 @@ export function ShopContextProvider({ children }: ShopContextProviderProps) {
         return allChampionsInPoolCostRolled;
     }
 
-    function getRandomChampion(championPool: ChampionPoolType, costRolled: keyof typeof championPool, randChampion: number): Champion {
-        let i = 0;
-        let indexResult = 0;
+    function getRandomChampion(costRolled: keyof typeof championPool, randChampion: number): Champion {
+        let i = 0, j = 0;
 
-        championPool[costRolled].forEach((costQuantity, index) => {
+        for (let costQuantity of championPool[costRolled]) {
             i += costQuantity.qtd;
             if (i >= randChampion) {
-                indexResult = index;
+                return championPool[costRolled][j].champion;
             }
-            // return championPool[costRolled][0].champion;
-        });
-        return championPool[costRolled][indexResult].champion;
+            j++;
+        }
+
+        return championPool[costRolled][0].champion;
     }
-    
-    function reroll(level: keyof typeof ODDS_REROLL, championPool: ChampionPoolType) {
+
+    function getOddUsingProbabilityArray() {
         const randomOdd = randomNumberInRange(0,100);
-        let costRolled: keyof typeof championPool;
 
         if (randomOdd === 0) {
-            costRolled = 1;
+            return 1
         } else {
             let i = 0;
             for(let runningPercentage = 0; randomOdd > runningPercentage; i++) {
                 runningPercentage += ODDS_REROLL[level][i];
             }
-            costRolled = i as keyof typeof championPool;
+            return i as keyof typeof championPool;
         }
+    }
 
-        const allChampionsInPoolCostRolled: number = getAllChampionsInPoolPerCost(championPool, costRolled);
-        
-        // console.log(allChampionsInPoolCostRolled);
+    function removeChampionFromPool(champ: Champion, cost: keyof typeof championPool) {
+        const championPositionOnArray = championPool[cost].findIndex(item => item.champion === champ);
+        setChampionPool(produce(draft => {
+            draft[cost][championPositionOnArray].qtd -= 1;
+        }));
+    }
+    
+    function reroll() {
+        const costRolled = getOddUsingProbabilityArray();
+
+        const allChampionsInPoolCostRolled: number = getAllChampionsInPoolPerCost(costRolled);
 
         const randChampion = Math.floor(Math.random() * allChampionsInPoolCostRolled);
-        const championResult: Champion = getRandomChampion(championPool, costRolled, randChampion);
-        console.log(championResult);
+        const championResult: Champion = getRandomChampion(costRolled, randChampion);
+        removeChampionFromPool(championResult, costRolled);
+        return championResult;
+    }
+
+    function rerollShop() {
+        setStore(produce(draft => {
+            draft[1] = reroll();
+            draft[2] = reroll();
+            draft[3] = reroll();
+            draft[4] = reroll();
+            draft[5] = reroll();
+        }));
     }
 
     return (
-        <ShopContext.Provider value={{ xp, level, gold, buyExp }}>
+        <ShopContext.Provider value={{ xp, level, gold, buyExp, store }}>
             {children}
         </ShopContext.Provider>
     )

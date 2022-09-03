@@ -1,15 +1,28 @@
 import { ChampionInfo, ChampionTileContainer, Trait, TraitBg, Traits } from "./styles";
-import ChampionTileAatrox from "../../../../../../../../assets/champions-tiles/aatrox.png";
-import TraitShimmerscale from "../../../../../../../../assets/traits/shimmerscale.png";
-import TraitWarrior from "../../../../../../../../assets/traits/warrior.png";
 import { GoldPrice } from "../../../../../../../../components/GoldPrice";
+import { Champion } from "../../../../../../../../contexts/ShopContext";
+import useImage from "../../../../../../../../hooks/useImage";
 
-export function ChampionTile() {
+interface ChampionTileProps {
+    champion: Champion;
+}
+
+export function ChampionTile({ champion }: ChampionTileProps) {
     return (
-        <ChampionTileContainer tier={1}>
-            <img src={ChampionTileAatrox} />
+        <ChampionTileContainer tier={champion.cost}>
+            <img src={useImage(champion.name, "champion")} />
             <Traits>
-                <Trait>
+                {champion.traits.map(trait => {
+                    return (
+                        <Trait key={trait}>
+                            <TraitBg>
+                                <img src={useImage(trait, "trait")} />
+                            </TraitBg>
+                            <span>{trait}</span>
+                        </Trait>
+                    )
+                })}
+                {/* <Trait>
                     <TraitBg>
                         <img src={TraitShimmerscale} />
                     </TraitBg>
@@ -20,11 +33,11 @@ export function ChampionTile() {
                         <img src={TraitWarrior} />
                     </TraitBg>
                     <span>Warrior</span>
-                </Trait>
+                </Trait> */}
             </Traits>
             <ChampionInfo>
-                <span>Aatrox</span>
-                <GoldPrice price={4} />
+                <span>{champion.name}</span>
+                <GoldPrice price={champion.cost} />
             </ChampionInfo>
         </ChampionTileContainer>
     );
