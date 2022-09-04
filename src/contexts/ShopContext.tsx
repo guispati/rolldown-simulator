@@ -18,17 +18,13 @@ interface ShopContextType {
     gold: number;
     store: Champion[];
     buyExp: () => void;
+    buyRoll: () => void;
 }
 
 interface ChampionPoolCost {
     champion: Champion;
     qtd: number;
 }
-
-// interface ChampionPoolCostQtd {
-//     cost: keyof ChampionPoolType;
-//     qtd: number;
-// }
 
 interface ChampionPoolType {
     1: ChampionPoolCost[];
@@ -77,6 +73,13 @@ export function ShopContextProvider({ children }: ShopContextProviderProps) {
         setGold(gold-4);
     }
 
+    function buyRoll() {
+        if (gold < 2) return;
+        setGold(gold-2);
+        restoreChampionsOnStoreToPool();
+        rerollShop();
+    }
+
     useEffect(() => {
         if (xp >= EXP_THRESHOLD[level]) {
             setXp(xp - EXP_THRESHOLD[level])
@@ -101,6 +104,12 @@ export function ShopContextProvider({ children }: ShopContextProviderProps) {
     // useEffect(() => {
 
     // }, [championPool]);
+
+    function restoreChampionsOnStoreToPool() {
+        store.forEach(champion => {
+            addChampionToPool(champion);
+        });
+    }
 
     function getAllChampionsInPoolPerCost(costRolled: keyof typeof championPool) {
         let allChampionsInPoolCostRolled = 0;
@@ -140,7 +149,16 @@ export function ShopContextProvider({ children }: ShopContextProviderProps) {
         }
     }
 
-    function removeChampionFromPool(champ: Champion, cost: keyof typeof championPool) {
+    function addChampionToPool(champ: Champion) {
+        const cost = champ.cost as keyof typeof championPool;
+        const championPositionOnArray = championPool[cost].findIndex(item => item.champion === champ);
+        setChampionPool(produce(draft => {
+            draft[cost][championPositionOnArray].qtd += 1;
+        }));
+    }
+
+    function removeChampionFromPool(champ: Champion) {
+        const cost = champ.cost as keyof typeof championPool;
         const championPositionOnArray = championPool[cost].findIndex(item => item.champion === champ);
         setChampionPool(produce(draft => {
             draft[cost][championPositionOnArray].qtd -= 1;
@@ -154,7 +172,7 @@ export function ShopContextProvider({ children }: ShopContextProviderProps) {
 
         const randChampion = Math.floor(Math.random() * allChampionsInPoolCostRolled);
         const championResult: Champion = getRandomChampion(costRolled, randChampion);
-        removeChampionFromPool(championResult, costRolled);
+        removeChampionFromPool(championResult);
         return championResult;
     }
 
@@ -169,7 +187,7 @@ export function ShopContextProvider({ children }: ShopContextProviderProps) {
     }
 
     return (
-        <ShopContext.Provider value={{ xp, level, gold, buyExp, store }}>
+        <ShopContext.Provider value={{ xp, level, gold, store, buyExp, buyRoll }}>
             {children}
         </ShopContext.Provider>
     )

@@ -18,8 +18,8 @@ export function Shop() {
                 <Odds />
                 <Gold />
                 <ShopButtons>
-                    <UpgradeButton isActive={true} />
-                    <RefreshButton isActive={true} />
+                    <UpgradeButton />
+                    <RefreshButton />
                 </ShopButtons>
                 <Champions />
             </ShopLine>
