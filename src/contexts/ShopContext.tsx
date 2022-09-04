@@ -36,10 +36,6 @@ interface ChampionPoolType {
 
 export const ShopContext = createContext({} as ShopContextType);
 
-interface ShopContextProviderProps {
-    children: ReactNode;
-}
-
 const ChampionPoolStatic: ChampionPoolType = {
     1: [],
     2: [],
@@ -57,6 +53,10 @@ CHAMPION_LIST.map((champion) => {
     }
 });
 
+interface ShopContextProviderProps {
+    children: ReactNode;
+}
+
 export function ShopContextProvider({ children }: ShopContextProviderProps) {
     const [level, setLevel] = useState<keyof typeof ODDS_REROLL>(9);
     const [xp, setXp] = useState(0);
@@ -68,7 +68,7 @@ export function ShopContextProvider({ children }: ShopContextProviderProps) {
     // const levelNormalized = level as keyof typeof ODDS_REROLL;
 
     function buyExp() {
-        if (gold < 4) return;
+        if (gold < 4 || level >= 9) return;
         setXp(xp+4);
         setGold(gold-4);
     }

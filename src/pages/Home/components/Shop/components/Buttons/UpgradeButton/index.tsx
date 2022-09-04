@@ -5,11 +5,11 @@ import { ButtonInfo } from "../styles";
 import { UpgradeButtonContainer } from "./styles";
 
 export function UpgradeButton() {
-    const { buyExp, gold } = useContext(ShopContext);
+    const { buyExp, gold, level } = useContext(ShopContext);
     const [active, setActive] = useState<boolean>(true);
 
     useEffect(() => {
-        setActive(gold < 4)
+        setActive((gold < 4 || level >= 9))
     },[gold]);
 
     return (
