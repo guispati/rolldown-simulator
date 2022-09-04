@@ -9,7 +9,7 @@ interface ChampionTileProps {
 
 export function ChampionTile({ champion }: ChampionTileProps) {
     return (
-        <ChampionTileContainer tier={champion.cost}>
+        <ChampionTileContainer tier={champion.value ? champion.value : champion.cost}>
             <img src={useImage(champion.name, "champion")} />
             <Traits>
                 {champion.traits.map(trait => {
@@ -22,22 +22,10 @@ export function ChampionTile({ champion }: ChampionTileProps) {
                         </Trait>
                     )
                 })}
-                {/* <Trait>
-                    <TraitBg>
-                        <img src={TraitShimmerscale} />
-                    </TraitBg>
-                    <span>Shimmerscale</span>
-                </Trait>
-                <Trait>
-                    <TraitBg>
-                        <img src={TraitWarrior} />
-                    </TraitBg>
-                    <span>Warrior</span>
-                </Trait> */}
             </Traits>
             <ChampionInfo>
                 <span>{champion.name}</span>
-                <GoldPrice price={champion.cost} />
+                <GoldPrice price={champion.value ? champion.value : champion.cost} />
             </ChampionInfo>
         </ChampionTileContainer>
     );

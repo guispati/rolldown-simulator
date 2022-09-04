@@ -9,6 +9,7 @@ export interface Champion {
     name: string;
     cost: number;
     traits: string[];
+    value?: number;
 }
 
 interface ShopContextType {
@@ -35,10 +36,6 @@ interface ChampionPoolType {
     3: ChampionPoolCost[];
     4: ChampionPoolCost[];
     5: ChampionPoolCost[];
-}
-
-interface StoreType {
-    champion: Champion[]
 }
 
 export const ShopContext = createContext({} as ShopContextType);
@@ -72,11 +69,7 @@ export function ShopContextProvider({ children }: ShopContextProviderProps) {
 
     const [store, setStore] = useState<Champion[]>([]);
 
-    const levelNormalized = level as keyof typeof ODDS_REROLL;
-
-    // const championPool: championPoolType = {
-
-    // }
+    // const levelNormalized = level as keyof typeof ODDS_REROLL;
 
     function buyExp() {
         if (gold < 4) return;

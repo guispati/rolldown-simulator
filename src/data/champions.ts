@@ -242,7 +242,8 @@ export const CHAMPION_LIST =
             "Ragewing",
             "Shapeshifter",
             "Dragon"
-        ]
+        ],
+        "value": 10,
     },
     {
         "championId": "TFT7_Hecarim",
@@ -470,7 +471,8 @@ export const CHAMPION_LIST =
         "traits": [
             "Tempest",
             "Dragon"
-        ]
+        ],
+        "value": 10,
     },
     {
         "championId": "TFT7_DragonPurple",
@@ -480,7 +482,8 @@ export const CHAMPION_LIST =
             "Whispers",
             "Bruiser",
             "Dragon"
-        ]
+        ],
+        "value": 8,
     },
     {
         "championId": "TFT7_DragonGreen",
@@ -490,7 +493,8 @@ export const CHAMPION_LIST =
             "Jade",
             "Mystic",
             "Dragon"
-        ]
+        ],
+        "value": 8,
     },
     {
         "championId": "TFT7_DragonGold",
@@ -500,7 +504,8 @@ export const CHAMPION_LIST =
             "Shimmerscale",
             "Dragon",
             "Guardian"
-        ]
+        ],
+        "value": 8,
     },
     {
         "championId": "TFT7_DragonBlue",
@@ -509,7 +514,8 @@ export const CHAMPION_LIST =
         "traits": [
             "Mirage",
             "Dragon"
-        ]
+        ],
+        "value": 8,
     },
     {
         "championId": "TFT7_Sona",
@@ -546,6 +552,7 @@ export const CHAMPION_LIST =
             "Astral",
             "Evoker",
             "Dragon"
-        ]
+        ],
+        "value": 10,
     }
 ]

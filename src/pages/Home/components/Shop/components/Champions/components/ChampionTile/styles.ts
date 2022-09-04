@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import traitsHud from '../../../../../../../../assets/traits-hud.png';
 import hud from '../../../../../../../../assets/hud.png';
+import dragonHud from '../../../../../../../../assets/hud-dragons.png';
 
 interface ChampionTileContainerProps {
     tier: number;
@@ -8,14 +9,19 @@ interface ChampionTileContainerProps {
 
 export const ChampionTileContainer = styled.div<ChampionTileContainerProps>`
     display: flex;
-    z-index: 1;
     width: 216px;
     height: 163px;
     align-self: center;
     position: relative;
-    background: url(${hud});
+    ${props => props.tier >= 0 && props.tier <= 5 ? `background: url(${hud});` : `background: url(${dragonHud});`}
     ${props => props.tier === 0 && 'background-position: -464px -772px;'} /* No tile */
     ${props => props.tier === 1 && 'background-position: -20px -430px;'}
+    ${props => props.tier === 2 && 'background-position: -465px -430px;'}
+    ${props => props.tier === 3 && 'background-position: -20px -600px;'}
+    ${props => props.tier === 4 && 'background-position: -465px -600px;'}
+    ${props => props.tier === 5 && 'background-position: -20px -770px;'}
+    ${props => props.tier === 8 && 'background-position: -3px 1px;'}
+    ${props => props.tier === 10 && 'background-position: -3px -166px;'}
 
     > img {
         width: 204px;
@@ -23,12 +29,19 @@ export const ChampionTileContainer = styled.div<ChampionTileContainerProps>`
         position: absolute;
         top: 6px;
         left: 4px;
+        z-index: -1;
     }
 
     &:hover {
-        background: url(${hud});
+        ${props => props.tier >= 0 && props.tier <= 5 ? `background: url(${hud});` : `background: url(${dragonHud});`}
         ${props => props.tier === 0 && 'background-position: -464px -772px;'} /* No tile */
         ${props => props.tier === 1 && 'background-position: -243px -430px;'}
+        ${props => props.tier === 2 && 'background-position: -688px -430px;'}
+        ${props => props.tier === 3 && 'background-position: -243px -600px;'}
+        ${props => props.tier === 4 && 'background-position: -688px -600px;'}
+        ${props => props.tier === 5 && 'background-position: -243px -770px;'}
+        ${props => props.tier === 8 && 'background-position: -221px 1px;'}
+        ${props => props.tier === 10 && 'background-position: -221px -166px;'}
         cursor: pointer;
     }
 `;
