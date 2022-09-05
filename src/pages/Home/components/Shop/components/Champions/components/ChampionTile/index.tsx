@@ -12,11 +12,11 @@ export function ChampionTile({ champion }: ChampionTileProps) {
     const { buyChampion, gold } = useContext(ShopContext);
     const [active, setActive] = useState<boolean>(true);
 
-    function handleClickChampion() {
-        buyChampion(champion);
-    }
-
     const isChampionValid = champion.name === "" ? false : true;
+
+    function handleClickChampion() {
+        isChampionValid && buyChampion(champion);
+    }
 
     useEffect(() => {
         setActive((gold < champion.cost))
