@@ -20,10 +20,11 @@ interface ChampionNameProps {
 
 export const ChampionName = styled.span<ChampionNameProps>`
     position: absolute;
-    bottom: -22px;
+    bottom: -20px;
     width: 80%;
     border-radius: 10px;
     text-align: center;
+    font-size: 0.75rem;
     ${props => props.tier > 0 && props.tier <= 5 ? `background: url(${hud});` : `background: url(${dragonHud});`}
     ${props => props.tier === 1 && 'background-position: -20px -560px'}
     ${props => props.tier === 2 && 'background-position: -470px -560px;'}
@@ -34,18 +35,27 @@ export const ChampionName = styled.span<ChampionNameProps>`
     ${props => props.tier === 10 && 'background-position: -10px -300px;'}
 `;
 
-interface ChampionStarProps {
-    tier: number;
-}
-
-export const ChampionStar = styled.span<ChampionStarProps>`
+const ChampionStar = styled.span`
     position: absolute;
-    top: -34px;
-    left: 6px;
-    width: 105px;
-    height: 30px;
+    top: 83px;
+    height: 23px;
     background: url(${hud});
-    ${props => props.tier === 1 && 'background-position: -1642px -60px;'}
-    ${props => props.tier === 2 && 'background-position: -1642px -30px;'}
-    ${props => props.tier === 3 && 'background-position: -1642px 0;'}
+`;
+
+export const Champion1Star = styled(ChampionStar)`
+    width: 13px;
+    background: url(${hud});
+    background-position: -1564px -548px;
+`;
+
+export const Champion2Star = styled(ChampionStar)`
+    width: 22px;
+    background: url(${hud});
+    background-position: -1537px -548px;
+`;
+
+export const Champion3Star = styled(ChampionStar)`
+    width: 31px;
+    background: url(${hud});
+    background-position: -1499px -548px;
 `;

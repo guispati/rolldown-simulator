@@ -1,6 +1,6 @@
 import { BenchType, Champion } from "../../../../../../contexts/ShopContext";
 import useImage from "../../../../../../hooks/useImage";
-import { BenchChampionContainer, ChampionName, ChampionStar } from "./styles";
+import { BenchChampionContainer, Champion1Star, Champion2Star, Champion3Star, ChampionName } from "./styles";
 
 interface BenchChampionProps {
     champion: BenchType;
@@ -9,8 +9,14 @@ interface BenchChampionProps {
 export function BenchChampion({ champion }: BenchChampionProps) {
     return (
         <BenchChampionContainer>
-            <ChampionStar tier={champion.tier} />
             <img src={useImage(champion.champion.name, "champion-icon")} />
+            {champion.tier === 1 ? (
+                <Champion1Star />
+            ) : champion.tier === 2 ? (
+                <Champion2Star />
+            ) : (
+                <Champion3Star />
+            )}
             <ChampionName tier={champion.champion.value ? champion.champion.value : champion.champion.cost}>
                 {champion.champion.name}
             </ChampionName>
