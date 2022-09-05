@@ -23,15 +23,6 @@ export const ChampionTileContainer = styled.div<ChampionTileContainerProps>`
     ${props => props.tier === 8 && 'background-position: -3px 1px;'}
     ${props => props.tier === 10 && 'background-position: -3px -166px;'}
 
-    > img {
-        width: 204px;
-        height: 118px;
-        position: absolute;
-        top: 6px;
-        left: 4px;
-        z-index: -1;
-    }
-
     &:hover {
         ${props => props.tier >= 0 && props.tier <= 5 ? `background: url(${hud});` : `background: url(${dragonHud});`}
         ${props => props.tier === 0 && 'background-position: -464px -772px;'} /* No tile */
@@ -44,6 +35,20 @@ export const ChampionTileContainer = styled.div<ChampionTileContainerProps>`
         ${props => props.tier === 10 && 'background-position: -221px -166px;'}
         cursor: pointer;
     }
+`;
+
+interface ChampionImageProps {
+    disabled: boolean;
+}
+
+export const ChampionImage = styled.img<ChampionImageProps>`
+    width: 204px;
+    height: 118px;
+    position: absolute;
+    top: 6px;
+    left: 4px;
+    z-index: -1;
+    ${props => props.disabled && "filter: grayscale(100%);"}
 `;
 
 export const Traits = styled.div`

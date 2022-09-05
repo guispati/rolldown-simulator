@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
-const useImage = (fileName: string, type: "champion" | "trait") => {
-    const folder = type === "champion" ? "champions-tiles" : "traits";
+const useImage = (fileName: string, type: "champion" | "trait" | "champion-icon") => {
+    const folder = type === "champion" ? "champions-tiles" : type === "champion-icon" ? "champions-icons" : "traits";
     const [image, setImage] = useState("");
 
     useEffect(() => {

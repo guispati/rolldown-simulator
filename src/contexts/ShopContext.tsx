@@ -17,8 +17,10 @@ interface ShopContextType {
     level: keyof typeof ODDS_REROLL;
     gold: number;
     store: Champion[];
+    bench: BenchType[];
     buyExp: () => void;
     buyRoll: () => void;
+    buyChampion: (champion: Champion) => void;
 }
 
 interface ChampionPoolCost {
@@ -32,6 +34,11 @@ interface ChampionPoolType {
     3: ChampionPoolCost[];
     4: ChampionPoolCost[];
     5: ChampionPoolCost[];
+}
+
+export interface BenchType {
+    champion: Champion;
+    tier: number;
 }
 
 export const ShopContext = createContext({} as ShopContextType);
@@ -64,6 +71,7 @@ export function ShopContextProvider({ children }: ShopContextProviderProps) {
     const [championPool, setChampionPool] = useState<ChampionPoolType>(ChampionPoolStatic);
 
     const [store, setStore] = useState<Champion[]>([]);
+    const [bench, setBench] = useState<BenchType[]>([]);
 
     // const levelNormalized = level as keyof typeof ODDS_REROLL;
 
@@ -78,6 +86,28 @@ export function ShopContextProvider({ children }: ShopContextProviderProps) {
         setGold(gold-2);
         restoreChampionsOnStoreToPool();
         rerollShop();
+    }
+
+    function buyChampion(champion: Champion) {
+        if (gold < champion.cost || bench.length >= 9) return;
+        const cost = champion.value ? champion.value : champion.cost
+        setGold(gold - cost);
+        setBench(produce(draft => {
+            draft.push({
+                champion: champion,
+                tier: 1
+            })
+        }));
+        const championPositionOnStoreArray = store.findIndex(item => item === champion);
+        setStore(produce(draft => {
+            draft[championPositionOnStoreArray] = {
+                championId: "",
+                name: "",
+                cost: 0,
+                traits: [],
+                value: 0,
+            }
+        }));
     }
 
     useEffect(() => {
@@ -105,9 +135,18 @@ export function ShopContextProvider({ children }: ShopContextProviderProps) {
 
     // }, [championPool]);
 
+    useEffect(() => {
+        console.log(bench);
+    }, [bench]);
+
+    useEffect(() => {
+        console.log(store);
+    }, [store]);
+    
+
     function restoreChampionsOnStoreToPool() {
         store.forEach(champion => {
-            addChampionToPool(champion);
+            champion.name === "" || addChampionToPool(champion);;
         });
     }
 
@@ -187,7 +226,7 @@ export function ShopContextProvider({ children }: ShopContextProviderProps) {
     }
 
     return (
-        <ShopContext.Provider value={{ xp, level, gold, store, buyExp, buyRoll }}>
+        <ShopContext.Provider value={{ xp, level, gold, store, bench, buyExp, buyRoll, buyChampion }}>
             {children}
         </ShopContext.Provider>
     )
