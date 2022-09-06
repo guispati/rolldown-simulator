@@ -3,6 +3,7 @@ import { produce } from 'immer';
 import { EXP_THRESHOLD, ODDS_REROLL, TOTAL_CHAMPIONS_IN_POOL } from "../data/constants";
 import { CHAMPION_LIST } from "../data/champions";
 import { randomNumberInRange } from "../utils/utils";
+import { CHAMPION_LIST_TEST } from "../data/championTest";
 
 export interface Champion {
     championId: string;
@@ -153,11 +154,11 @@ export function ShopContextProvider({ children }: ShopContextProviderProps) {
     }, []);
 
     // useEffect(() => {
-
+    //     console.log(championPool)
     // }, [championPool]);
 
-    useEffect(() => {
-    }, [bench]);
+    // useEffect(() => {
+    // }, [bench]);
     
     function checkChampionUpgrade(champion: BenchType) {
         let counter = 0;
@@ -173,7 +174,7 @@ export function ShopContextProvider({ children }: ShopContextProviderProps) {
         const upgradedChampion: BenchType = {
             champion: insertingChampion.champion,
             tier: insertingChampion.tier+1,
-        }
+        };
         const checkUpgrade = checkChampionUpgrade(upgradedChampion);
         if (!checkUpgrade) {
             setBench(produce(draft => {
@@ -181,8 +182,19 @@ export function ShopContextProvider({ children }: ShopContextProviderProps) {
                 draft.splice(indexChampionOnArrayToRemove, 1);
             }));
         } else {
-            insertUpgradedChampion(upgradedChampion);
+            insertUpgradedChampionTier3(upgradedChampion, indexChampionOnArrayToUpgrade, indexChampionOnArrayToRemove);
         }
+    }
+
+    function insertUpgradedChampionTier3(insertingChampion: BenchType, indexChampionOnArrayToRemove2:number, indexChampionOnArrayToRemove3:number) {
+        const indexChampionOnArrayToUpgrade = bench.findIndex((benchChampion => benchChampion.champion === insertingChampion.champion && benchChampion.tier === insertingChampion.tier));
+        const indexChampionOnArrayToRemove = bench.findIndex(((benchChampion, index) => benchChampion.champion === insertingChampion.champion && benchChampion.tier === insertingChampion.tier && index !== indexChampionOnArrayToUpgrade));
+        setBench(produce(draft => {
+            draft[indexChampionOnArrayToUpgrade].tier++;
+            draft.splice(indexChampionOnArrayToRemove, 1);
+            draft.splice(indexChampionOnArrayToRemove2, 1);
+            draft.splice(indexChampionOnArrayToRemove3, 1);
+        }));
     }
 
     function restoreChampionsOnStoreToPool() {
