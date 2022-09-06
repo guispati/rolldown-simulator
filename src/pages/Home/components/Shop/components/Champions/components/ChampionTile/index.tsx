@@ -6,16 +6,17 @@ import { useContext, useEffect, useState } from "react";
 
 interface ChampionTileProps {
     champion: Champion;
+    championIndexOnArray: number;
 }
 
-export function ChampionTile({ champion }: ChampionTileProps) {
+export function ChampionTile({ champion, championIndexOnArray }: ChampionTileProps) {
     const { buyChampion, gold } = useContext(ShopContext);
     const [active, setActive] = useState<boolean>(true);
 
     const isChampionValid = champion.name === "" ? false : true;
 
     function handleClickChampion() {
-        isChampionValid && buyChampion(champion);
+        isChampionValid && buyChampion(champion, championIndexOnArray);
     }
 
     useEffect(() => {

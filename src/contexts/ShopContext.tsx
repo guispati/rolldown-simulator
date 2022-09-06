@@ -20,7 +20,7 @@ interface ShopContextType {
     bench: BenchType[];
     buyExp: () => void;
     buyRoll: () => void;
-    buyChampion: (champion: Champion) => void;
+    buyChampion: (champion: Champion, championPositionOnStoreArray: number) => void;
 }
 
 interface ChampionPoolCost {
@@ -42,6 +42,11 @@ export interface BenchType {
 }
 
 export const ShopContext = createContext({} as ShopContextType);
+
+interface ChampionCounterType {
+    champion: Champion;
+    qtd: number;
+}
 
 const ChampionPoolStatic: ChampionPoolType = {
     1: [],
@@ -65,13 +70,15 @@ interface ShopContextProviderProps {
 }
 
 export function ShopContextProvider({ children }: ShopContextProviderProps) {
-    const [level, setLevel] = useState<keyof typeof ODDS_REROLL>(9);
+    const [level, setLevel] = useState<keyof typeof ODDS_REROLL>(2);
     const [xp, setXp] = useState(0);
-    const [gold, setGold] = useState(50);
+    const [gold, setGold] = useState(999);
     const [championPool, setChampionPool] = useState<ChampionPoolType>(ChampionPoolStatic);
 
     const [store, setStore] = useState<Champion[]>([]);
     const [bench, setBench] = useState<BenchType[]>([]);
+
+    const [championCounter, setChampionCounter] = useState<ChampionCounterType[]>([]);
 
     // const levelNormalized = level as keyof typeof ODDS_REROLL;
 
@@ -88,17 +95,23 @@ export function ShopContextProvider({ children }: ShopContextProviderProps) {
         rerollShop();
     }
 
-    function buyChampion(champion: Champion) {
+    function buyChampion(champion: Champion, championPositionOnStoreArray: number) {
         if (gold < champion.cost || bench.length >= 9) return;
-        const cost = champion.value ? champion.value : champion.cost
+        const cost = champion.value ? champion.value : champion.cost;
         setGold(gold - cost);
-        setBench(produce(draft => {
-            draft.push({
-                champion: champion,
-                tier: 1
-            })
-        }));
-        const championPositionOnStoreArray = store.findIndex(item => item === champion);
+        const insertingChampion: BenchType = {
+            champion: champion,
+            tier: 1,
+        }
+        const checkUpgrade = checkChampionUpgrade(insertingChampion);
+        if (!checkUpgrade) {
+            setBench(produce(draft => {
+                draft.push(insertingChampion);
+            }));
+        } else {
+            insertUpgradedChampion(insertingChampion);
+        }
+
         setStore(produce(draft => {
             draft[championPositionOnStoreArray] = {
                 championId: "",
@@ -117,17 +130,25 @@ export function ShopContextProvider({ children }: ShopContextProviderProps) {
         }
     }, [xp, level]);
 
+    // useEffect(() => {
+    //     bench.forEach(champion => {
+    //         const index = championCounter.findIndex(counter => champion.champion === counter.champion);
+    //         if (index > 0) {
+    //             setChampionCounter(produce(draft => {
+    //                 draft[index].qtd++;
+    //             }));
+    //         } else {
+    //             setChampionCounter(produce(draft => {
+    //                 draft.push({
+    //                     champion: champion.champion,
+    //                     qtd: 1
+    //                 })
+    //             }));
+    //         }
+    //     });
+    // }, [bench]);
+
     useEffect(() => {
-        // CHAMPION_LIST.map((champion) => {
-        //     setChampionPool(produce(draft => {
-        //         const cost = champion.cost as keyof ChampionPoolType;
-        //         draft[cost].push({
-        //             champion: champion,
-        //             qtd: TOTAL_CHAMPIONS_IN_POOL[cost]
-        //         });
-        //     }));
-        // });
-        // reroll();
         rerollShop();
     }, []);
 
@@ -136,13 +157,33 @@ export function ShopContextProvider({ children }: ShopContextProviderProps) {
     // }, [championPool]);
 
     useEffect(() => {
-        console.log(bench);
     }, [bench]);
-
-    useEffect(() => {
-        console.log(store);
-    }, [store]);
     
+    function checkChampionUpgrade(champion: BenchType) {
+        let counter = 0;
+        bench.forEach(benchChampion => {
+            benchChampion.champion === champion.champion && benchChampion.tier === champion.tier ? counter++ : counter;
+        })
+        return counter >= 2 ? true : false;
+    }
+
+    function insertUpgradedChampion(insertingChampion: BenchType) {
+        const indexChampionOnArrayToUpgrade = bench.findIndex((benchChampion => benchChampion.champion === insertingChampion.champion && benchChampion.tier === insertingChampion.tier));
+        const indexChampionOnArrayToRemove = bench.findIndex(((benchChampion, index) => benchChampion.champion === insertingChampion.champion && benchChampion.tier === insertingChampion.tier && index !== indexChampionOnArrayToUpgrade));
+        const upgradedChampion: BenchType = {
+            champion: insertingChampion.champion,
+            tier: insertingChampion.tier+1,
+        }
+        const checkUpgrade = checkChampionUpgrade(upgradedChampion);
+        if (!checkUpgrade) {
+            setBench(produce(draft => {
+                draft[indexChampionOnArrayToUpgrade].tier++;
+                draft.splice(indexChampionOnArrayToRemove, 1);
+            }));
+        } else {
+            insertUpgradedChampion(upgradedChampion);
+        }
+    }
 
     function restoreChampionsOnStoreToPool() {
         store.forEach(champion => {

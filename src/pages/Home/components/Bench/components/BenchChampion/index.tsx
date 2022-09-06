@@ -1,4 +1,4 @@
-import { BenchType, Champion } from "../../../../../../contexts/ShopContext";
+import { BenchType } from "../../../../../../contexts/ShopContext";
 import useImage from "../../../../../../hooks/useImage";
 import { BenchChampionContainer, Champion1Star, Champion2Star, Champion3Star, ChampionName } from "./styles";
 
@@ -20,7 +20,6 @@ export function BenchChampion({ champion }: BenchChampionProps) {
             <ChampionName tier={champion.champion.value ? champion.champion.value : champion.champion.cost}>
                 {champion.champion.name}
             </ChampionName>
-            {/* <span>{champion.name}</span> */}
         </BenchChampionContainer>
     );
 }

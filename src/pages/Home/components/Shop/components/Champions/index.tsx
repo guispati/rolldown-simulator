@@ -8,9 +8,9 @@ export function Champions() {
     const { store } = useContext(ShopContext);
     return (
         <ChampionsContainer>
-            {store.map(shop => {
+            {store.map((shop, index) => {
                 return (
-                    <ChampionTile key={uuidv4()} champion={shop} />
+                    <ChampionTile key={uuidv4()} champion={shop} championIndexOnArray={index} />
                 )
             })}
         </ChampionsContainer>
