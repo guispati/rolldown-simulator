@@ -79,8 +79,6 @@ export function ShopContextProvider({ children }: ShopContextProviderProps) {
     const [store, setStore] = useState<Champion[]>([]);
     const [bench, setBench] = useState<BenchType[]>([]);
 
-    const [championCounter, setChampionCounter] = useState<ChampionCounterType[]>([]);
-
     // const levelNormalized = level as keyof typeof ODDS_REROLL;
 
     function buyExp() {
@@ -130,24 +128,6 @@ export function ShopContextProvider({ children }: ShopContextProviderProps) {
             setLevel((level+1) as keyof typeof ODDS_REROLL);
         }
     }, [xp, level]);
-
-    // useEffect(() => {
-    //     bench.forEach(champion => {
-    //         const index = championCounter.findIndex(counter => champion.champion === counter.champion);
-    //         if (index > 0) {
-    //             setChampionCounter(produce(draft => {
-    //                 draft[index].qtd++;
-    //             }));
-    //         } else {
-    //             setChampionCounter(produce(draft => {
-    //                 draft.push({
-    //                     champion: champion.champion,
-    //                     qtd: 1
-    //                 })
-    //             }));
-    //         }
-    //     });
-    // }, [bench]);
 
     useEffect(() => {
         rerollShop();
