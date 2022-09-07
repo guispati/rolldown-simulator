@@ -77,6 +77,19 @@ export function ShopContextProvider({ children }: ShopContextProviderProps) {
     const [store, setStore] = useState<Champion[]>([]);
     const [bench, setBench] = useState<BenchType[]>([]);
 
+    const emptyChampion: Champion = {
+        championId: "",
+        name: "",
+        cost: 0,
+        traits: [],
+        value: 0,
+    }
+
+    const emptyChampionBench: BenchType = {
+        champion: emptyChampion,
+        tier: 0
+    }
+
     function playSound(soundName: string) {
         let player = new Audio(soundName);
         player.volume = 0.08;
@@ -125,21 +138,22 @@ export function ShopContextProvider({ children }: ShopContextProviderProps) {
         }
         const checkUpgrade = checkChampionUpgrade(insertingChampion);
         if (!checkUpgrade) {
-            setBench(produce(draft => {
-                draft.push(insertingChampion);
-            }));
+            const indexToInsert = bench.findIndex(curr => curr.champion.name === "");
+            if (indexToInsert > 0) {
+                setBench(produce(draft => {
+                    draft[indexToInsert] = insertingChampion;
+                }));
+            } else {
+                setBench(produce(draft => {
+                    draft.push(insertingChampion);
+                }));
+            }
         } else {
             insertUpgradedChampion(insertingChampion);
         }
 
         setStore(produce(draft => {
-            draft[championPositionOnStoreArray] = {
-                championId: "",
-                name: "",
-                cost: 0,
-                traits: [],
-                value: 0,
-            }
+            draft[championPositionOnStoreArray] = emptyChampion;
         }));
     }
 
@@ -182,7 +196,8 @@ export function ShopContextProvider({ children }: ShopContextProviderProps) {
             playSound(audio.ChampionLevelUpTier2Audio);
             setBench(produce(draft => {
                 draft[indexChampionOnArrayToUpgrade].tier++;
-                draft.splice(indexChampionOnArrayToRemove, 1);
+                draft[indexChampionOnArrayToRemove] = emptyChampionBench;
+                // draft.splice(indexChampionOnArrayToRemove, 1);
             }));
         } else {
             playSound(audio.ChampionLevelUpTier3Audio);
@@ -195,9 +210,12 @@ export function ShopContextProvider({ children }: ShopContextProviderProps) {
         const indexChampionOnArrayToRemove = bench.findIndex(((benchChampion, index) => benchChampion.champion === insertingChampion.champion && benchChampion.tier === insertingChampion.tier && index !== indexChampionOnArrayToUpgrade));
         setBench(produce(draft => {
             draft[indexChampionOnArrayToUpgrade].tier++;
-            draft.splice(indexChampionOnArrayToRemove3, 1);
-            draft.splice(indexChampionOnArrayToRemove2, 1);
-            draft.splice(indexChampionOnArrayToRemove, 1);
+            draft[indexChampionOnArrayToRemove3] = emptyChampionBench;
+            draft[indexChampionOnArrayToRemove2] = emptyChampionBench;
+            draft[indexChampionOnArrayToRemove] = emptyChampionBench;
+            // draft.splice(indexChampionOnArrayToRemove3, 1);
+            // draft.splice(indexChampionOnArrayToRemove2, 1);
+            // draft.splice(indexChampionOnArrayToRemove, 1);
         }));
     }
 

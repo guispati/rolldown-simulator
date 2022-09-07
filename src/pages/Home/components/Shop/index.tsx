@@ -9,8 +9,6 @@ import { Odds } from "./components/Odds";
 import { ShopButtons, ShopContainer, ShopLine } from "./styles";
 
 export function Shop() {
-    const { xp, level, gold} = useContext(ShopContext);
-
     return (
         <ShopContainer>
             <ShopLine>
