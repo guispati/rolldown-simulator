@@ -1,13 +1,22 @@
 import { useContext } from "react";
-import { GoldPrice } from "../../../../../../components/GoldPrice";
+import { GoldIcon } from "../../../../../../components/GoldIcon/styles";
+import { GoldPriceContainer } from "../../../../../../components/GoldPrice/styles";
 import { ShopContext } from "../../../../../../contexts/ShopContext";
 import { GoldContainer } from "./styles";
 
 export function Gold() {
-    const { gold } = useContext(ShopContext);
+    const { gold, changeGold } = useContext(ShopContext);
+
+    function handleInputGold(event: React.ChangeEvent<HTMLInputElement>) {
+        changeGold(parseInt(event.target.value));
+    }
+
     return (
         <GoldContainer>
-            <GoldPrice price={gold} />
+            <GoldPriceContainer>
+                <GoldIcon size={16} />
+                <input type="number" onChange={handleInputGold} value={gold} />
+            </GoldPriceContainer>
         </GoldContainer>
     )
 }

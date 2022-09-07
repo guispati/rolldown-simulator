@@ -4,6 +4,8 @@ import { EXP_THRESHOLD, ODDS_REROLL, TOTAL_CHAMPIONS_IN_POOL } from "../data/con
 import { CHAMPION_LIST } from "../data/champions";
 import { randomNumberInRange } from "../utils/utils";
 import { CHAMPION_LIST_TEST } from "../data/championTest";
+import useKeyboardShortcut from "use-keyboard-shortcut";
+import audio from "../assets/audio/audio";
 
 export interface Champion {
     championId: string;
@@ -22,6 +24,7 @@ interface ShopContextType {
     buyExp: () => void;
     buyRoll: () => void;
     buyChampion: (champion: Champion, championPositionOnStoreArray: number) => void;
+    changeGold: (newGold: number) => void;
 }
 
 interface ChampionPoolCost {
@@ -43,11 +46,6 @@ export interface BenchType {
 }
 
 export const ShopContext = createContext({} as ShopContextType);
-
-interface ChampionCounterType {
-    champion: Champion;
-    qtd: number;
-}
 
 const ChampionPoolStatic: ChampionPoolType = {
     1: [],
@@ -79,23 +77,46 @@ export function ShopContextProvider({ children }: ShopContextProviderProps) {
     const [store, setStore] = useState<Champion[]>([]);
     const [bench, setBench] = useState<BenchType[]>([]);
 
+    function playSound(soundName: string) {
+        let player = new Audio(soundName);
+        player.volume = 0.08;
+        player.play();
+    }
+
+    useKeyboardShortcut(
+        ["D"],
+        () => buyRoll()
+    );
+    useKeyboardShortcut(
+        ["F"],
+        () => buyExp()
+    );
+
     // const levelNormalized = level as keyof typeof ODDS_REROLL;
 
     function buyExp() {
         if (gold < 4 || level >= 9) return;
+        playSound(audio.BuyExpAudio);
         setXp(xp+4);
         setGold(gold-4);
     }
 
     function buyRoll() {
         if (gold < 2) return;
+        playSound(audio.RefreshAudio);
         setGold(gold-2);
         restoreChampionsOnStoreToPool();
         rerollShop();
     }
 
+    function changeGold(newGold: number) {
+        setGold(newGold);
+        playSound(audio.GoldAudio);
+    }
+
     function buyChampion(champion: Champion, championPositionOnStoreArray: number) {
         if (gold < champion.cost || bench.length >= 9) return;
+        playSound(audio.BuyChampionAudio);
         const cost = champion.value ? champion.value : champion.cost;
         setGold(gold - cost);
         const insertingChampion: BenchType = {
@@ -124,6 +145,7 @@ export function ShopContextProvider({ children }: ShopContextProviderProps) {
 
     useEffect(() => {
         if (xp >= EXP_THRESHOLD[level]) {
+            playSound(audio.PlayerLevelUpAudio);
             setXp(xp - EXP_THRESHOLD[level])
             setLevel((level+1) as keyof typeof ODDS_REROLL);
         }
@@ -157,11 +179,13 @@ export function ShopContextProvider({ children }: ShopContextProviderProps) {
         };
         const checkUpgrade = checkChampionUpgrade(upgradedChampion);
         if (!checkUpgrade) {
+            playSound(audio.ChampionLevelUpTier2Audio);
             setBench(produce(draft => {
                 draft[indexChampionOnArrayToUpgrade].tier++;
                 draft.splice(indexChampionOnArrayToRemove, 1);
             }));
         } else {
+            playSound(audio.ChampionLevelUpTier3Audio);
             insertUpgradedChampionTier3(upgradedChampion, indexChampionOnArrayToUpgrade, indexChampionOnArrayToRemove);
         }
     }
@@ -171,9 +195,9 @@ export function ShopContextProvider({ children }: ShopContextProviderProps) {
         const indexChampionOnArrayToRemove = bench.findIndex(((benchChampion, index) => benchChampion.champion === insertingChampion.champion && benchChampion.tier === insertingChampion.tier && index !== indexChampionOnArrayToUpgrade));
         setBench(produce(draft => {
             draft[indexChampionOnArrayToUpgrade].tier++;
-            draft.splice(indexChampionOnArrayToRemove, 1);
-            draft.splice(indexChampionOnArrayToRemove2, 1);
             draft.splice(indexChampionOnArrayToRemove3, 1);
+            draft.splice(indexChampionOnArrayToRemove2, 1);
+            draft.splice(indexChampionOnArrayToRemove, 1);
         }));
     }
 
@@ -259,7 +283,7 @@ export function ShopContextProvider({ children }: ShopContextProviderProps) {
     }
 
     return (
-        <ShopContext.Provider value={{ xp, level, gold, store, bench, buyExp, buyRoll, buyChampion }}>
+        <ShopContext.Provider value={{ xp, level, gold, store, bench, buyExp, buyRoll, buyChampion, changeGold }}>
             {children}
         </ShopContext.Provider>
     )
