@@ -1,8 +1,8 @@
-import { createContext, ReactNode, useEffect, useState } from "react";
+import { createContext, ReactNode, useCallback, useEffect, useState } from "react";
 import { produce } from 'immer';
-import { EXP_THRESHOLD, ODDS_REROLL, TOTAL_CHAMPIONS_IN_POOL } from "../data/constants";
+import { EXP_THRESHOLD, ODDS_REROLL, TIER_CHAMPIONS_QTD, TOTAL_CHAMPIONS_IN_POOL } from "../data/constants";
 import { CHAMPION_LIST } from "../data/champions";
-import { randomNumberInRange } from "../utils/utils";
+import { playSound, randomNumberInRange } from "../utils/utils";
 import { CHAMPION_LIST_TEST } from "../data/championTest";
 import useKeyboardShortcut from "use-keyboard-shortcut";
 import audio from "../assets/audio/audio";
@@ -25,6 +25,8 @@ interface ShopContextType {
     buyRoll: () => void;
     buyChampion: (champion: Champion, championPositionOnStoreArray: number) => void;
     changeGold: (newGold: number) => void;
+    moveChampionOnBench: (dragIndex: number, hoverIndex: number) => void;
+    moveChampionToDeleteZone: (dragIndex: number) => void
 }
 
 interface ChampionPoolCost {
@@ -54,6 +56,32 @@ const ChampionPoolStatic: ChampionPoolType = {
     4: [],
     5: []
 }
+
+const emptyChampion: Champion = {
+    championId: "",
+    name: "",
+    cost: 0,
+    traits: [],
+    value: 0,
+}
+
+const emptyChampionBench: BenchType = {
+    champion: emptyChampion,
+    tier: 0
+}
+
+const benchInitiator: BenchType[] = [
+    emptyChampionBench,
+    emptyChampionBench,
+    emptyChampionBench,
+    emptyChampionBench,
+    emptyChampionBench,
+    emptyChampionBench,
+    emptyChampionBench,
+    emptyChampionBench,
+    emptyChampionBench,
+]
+
 CHAMPION_LIST.map((champion) => {
     const cost = champion.cost as keyof ChampionPoolType;
     if (cost <= 5) {
@@ -71,30 +99,13 @@ interface ShopContextProviderProps {
 export function ShopContextProvider({ children }: ShopContextProviderProps) {
     const [level, setLevel] = useState<keyof typeof ODDS_REROLL>(2);
     const [xp, setXp] = useState(0);
-    const [gold, setGold] = useState(999);
+    const [gold, setGold] = useState(50);
     const [championPool, setChampionPool] = useState<ChampionPoolType>(ChampionPoolStatic);
 
     const [store, setStore] = useState<Champion[]>([]);
-    const [bench, setBench] = useState<BenchType[]>([]);
 
-    const emptyChampion: Champion = {
-        championId: "",
-        name: "",
-        cost: 0,
-        traits: [],
-        value: 0,
-    }
+    const [bench, setBench] = useState<BenchType[]>(benchInitiator);
 
-    const emptyChampionBench: BenchType = {
-        champion: emptyChampion,
-        tier: 0
-    }
-
-    function playSound(soundName: string) {
-        let player = new Audio(soundName);
-        player.volume = 0.08;
-        player.play();
-    }
 
     useKeyboardShortcut(
         ["D"],
@@ -128,7 +139,7 @@ export function ShopContextProvider({ children }: ShopContextProviderProps) {
     }
 
     function buyChampion(champion: Champion, championPositionOnStoreArray: number) {
-        if (gold < champion.cost || bench.length >= 9) return;
+        if (gold < champion.cost || benchLength() >= 9) return;
         playSound(audio.BuyChampionAudio);
         const cost = champion.value ? champion.value : champion.cost;
         setGold(gold - cost);
@@ -139,7 +150,7 @@ export function ShopContextProvider({ children }: ShopContextProviderProps) {
         const checkUpgrade = checkChampionUpgrade(insertingChampion);
         if (!checkUpgrade) {
             const indexToInsert = bench.findIndex(curr => curr.champion.name === "");
-            if (indexToInsert > 0) {
+            if (indexToInsert >= 0) {
                 setBench(produce(draft => {
                     draft[indexToInsert] = insertingChampion;
                 }));
@@ -155,6 +166,36 @@ export function ShopContextProvider({ children }: ShopContextProviderProps) {
         setStore(produce(draft => {
             draft[championPositionOnStoreArray] = emptyChampion;
         }));
+    }
+
+    const moveChampionOnBench = useCallback((dragIndex: number, hoverIndex: number) => {
+        playSound(audio.DropAudio);
+        setBench(produce(draft => {
+            [draft[hoverIndex], draft[dragIndex]] = [draft[dragIndex], draft[hoverIndex]];
+        }));
+    }, []);
+
+    const moveChampionToDeleteZone = useCallback((dragIndex: number) => {
+        const cost = checkCostBenchChampion(dragIndex);
+        if (cost !== undefined) {
+            setGold(gold + cost);
+        }
+        playSound(audio.SellChampionAudio);
+        setBench(produce(draft => {
+            draft[dragIndex] = emptyChampionBench;
+        }));
+    }, [gold]);
+
+    function checkCostBenchChampion(index: number) {
+        const costUnit = bench[index].champion.value ? bench[index].champion.value : bench[index].champion.cost;
+        const tier = bench[index].tier;
+        const tierChampions = TIER_CHAMPIONS_QTD[tier-1];
+        if (costUnit !== undefined) {
+            if (costUnit === 1 || tier === 1) {
+                return costUnit * tierChampions;
+            }
+            return costUnit * tierChampions -1;
+        }
     }
 
     useEffect(() => {
@@ -175,6 +216,14 @@ export function ShopContextProvider({ children }: ShopContextProviderProps) {
 
     // useEffect(() => {
     // }, [bench]);
+
+    function benchLength() {
+        let counter = 0;
+        bench.forEach(benchChampion => {
+            benchChampion.champion.name !== "" ? counter++ : counter;
+        })
+        return counter;
+    }
     
     function checkChampionUpgrade(champion: BenchType) {
         let counter = 0;
@@ -301,7 +350,7 @@ export function ShopContextProvider({ children }: ShopContextProviderProps) {
     }
 
     return (
-        <ShopContext.Provider value={{ xp, level, gold, store, bench, buyExp, buyRoll, buyChampion, changeGold }}>
+        <ShopContext.Provider value={{ xp, level, gold, store, bench, buyExp, buyRoll, buyChampion, changeGold, moveChampionOnBench, moveChampionToDeleteZone }}>
             {children}
         </ShopContext.Provider>
     )

@@ -12,8 +12,8 @@ export function Home() {
             <ShopContextProvider>
                 <DndProvider backend={HTML5Backend}>
                     <Bench />
+                    <Shop />
                 </DndProvider>
-                <Shop />
             </ShopContextProvider>
         </HomeContainer>
     )

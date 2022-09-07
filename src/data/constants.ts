@@ -18,3 +18,7 @@ export const TOTAL_CHAMPIONS_IN_POOL = {
     4: 12,
     5: 10,
 }
+
+export const TIER_CHAMPIONS_QTD = [
+    1, 3, 9
+]
