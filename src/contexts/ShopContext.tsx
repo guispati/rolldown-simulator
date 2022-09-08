@@ -22,12 +22,14 @@ interface ShopContextType {
     gold: number;
     store: Champion[];
     bench: BenchType[];
+    championMoving: number;
     buyExp: () => void;
     buyRoll: () => void;
     buyChampion: (champion: Champion, championPositionOnStoreArray: number) => void;
     changeGold: (newGold: number) => void;
     moveChampionOnBench: (dragIndex: number, hoverIndex: number) => void;
     moveChampionToDeleteZone: (dragIndex: number) => void
+    isChampionMoving: (index: number) => void;
 }
 
 interface ChampionPoolCost {
@@ -107,6 +109,8 @@ export function ShopContextProvider({ children }: ShopContextProviderProps) {
 
     const [bench, setBench] = useState<BenchType[]>(benchInitiator);
 
+    const [championMoving, setChampionMoving] = useState(-1);
+
     useKeyboardShortcut(
         ["D"],
         () => buyRoll()
@@ -116,27 +120,27 @@ export function ShopContextProvider({ children }: ShopContextProviderProps) {
         () => buyExp()
     );
 
-    function buyExp() {
+    const buyExp = useCallback(() => {
         if (gold < 4 || level >= 9) return;
         playSound(audio.BuyExpAudio);
         setXp(xp+4);
         setGold(gold-4);
-    }
+    }, [gold, xp, level]);
 
-    function buyRoll() {
+    const buyRoll = useCallback(() => {
         if (gold < 2) return;
         playSound(audio.RefreshAudio);
         setGold(gold-2);
         restoreChampionsOnStoreToPool();
         rerollShop();
-    }
+    }, [gold]);
 
-    function changeGold(newGold: number) {
+    const changeGold = useCallback((newGold: number) => {
         setGold(newGold);
         playSound(audio.GoldAudio);
-    }
+    }, [gold])
 
-    function buyChampion(champion: Champion, championPositionOnStoreArray: number) {
+    const buyChampion = useCallback((champion: Champion, championPositionOnStoreArray: number) => {
         if (gold < champion.cost) return;
         const cost = champion.value ? champion.value : champion.cost;
         const insertingChampion: BenchType = {
@@ -165,16 +169,20 @@ export function ShopContextProvider({ children }: ShopContextProviderProps) {
         setStore(produce(draft => {
             draft[championPositionOnStoreArray] = emptyChampion;
         }));
-    }
+    }, [gold, bench, store]);
 
-    function moveChampionOnBench (dragIndex: number, hoverIndex: number) {
+    const isChampionMoving = useCallback((index: number) => {
+        setChampionMoving(index);
+    }, [championMoving]);
+
+    const moveChampionOnBench = useCallback((dragIndex: number, hoverIndex: number) => {
         playSound(audio.DropAudio);
         setBench(produce(draft => {
             [draft[hoverIndex], draft[dragIndex]] = [draft[dragIndex], draft[hoverIndex]];
         }));
-    };
+    }, [bench]);
 
-    function moveChampionToDeleteZone(dragIndex: number) {
+    const moveChampionToDeleteZone = useCallback((dragIndex: number) => {
         const cost = checkCostBenchChampion(dragIndex);
         if (cost !== undefined) {
             setGold(gold + cost);
@@ -183,7 +191,7 @@ export function ShopContextProvider({ children }: ShopContextProviderProps) {
         setBench(produce(draft => {
             draft[dragIndex] = emptyChampionBench;
         }));
-    };
+    }, [gold, bench]);
 
     function checkCostBenchChampion(index: number) {
         const costUnit = bench[index].champion.value ? bench[index].champion.value : bench[index].champion.cost;
@@ -338,7 +346,7 @@ export function ShopContextProvider({ children }: ShopContextProviderProps) {
     }
 
     return (
-        <ShopContext.Provider value={{ xp, level, gold, store, bench, buyExp, buyRoll, buyChampion, changeGold, moveChampionOnBench, moveChampionToDeleteZone }}>
+        <ShopContext.Provider value={{ xp, level, gold, store, bench, championMoving, buyExp, buyRoll, buyChampion, changeGold, moveChampionOnBench, moveChampionToDeleteZone, isChampionMoving }}>
             {children}
         </ShopContext.Provider>
     )

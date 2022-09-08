@@ -4,9 +4,11 @@ import { BenchChampionContainer, Champion1Star, Champion2Star, Champion3Star, Ch
 import { useDrag, useDrop } from 'react-dnd';
 import type { Identifier } from 'dnd-core';
 import { DragItem, ItemTypes } from "../../../../../../libs/dnd";
-import { useRef, useState } from "react";
+import { memo, useRef, useState } from "react";
 import useKeyboardShortcut from "use-keyboard-shortcut";
 import { useContextSelector } from "use-context-selector";
+import { playSound } from "../../../../../../utils/utils";
+import DragAudio from "../../../../../../assets/audio/pickup.ogg";
 
 interface BenchChampionProps {
     id: string;
@@ -14,12 +16,15 @@ interface BenchChampionProps {
     index: number;
 }
 
-export function BenchChampion({ id, champion, index }: BenchChampionProps) {
+function BenchChampionComponent({ id, champion, index }: BenchChampionProps) {
     const moveChampionOnBench = useContextSelector(ShopContext, (context) => {
         return context.moveChampionOnBench;
     });
     const moveChampionToDeleteZone = useContextSelector(ShopContext, (context) => {
         return context.moveChampionToDeleteZone;
+    });
+    const isChampionMoving = useContextSelector(ShopContext, (context) => {
+        return context.isChampionMoving;
     });
     const [mouseHover, setMouseHover] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
@@ -56,6 +61,9 @@ export function BenchChampion({ id, champion, index }: BenchChampionProps) {
         item: () => {
             return { id, index }
         },
+        end() {
+            isChampionMoving(-1);
+        }
     })
 
     const isChampionValid = champion.champion.name === "" ? false : true;
@@ -68,6 +76,13 @@ export function BenchChampion({ id, champion, index }: BenchChampionProps) {
         isChampionValid && setMouseHover(false);
     }
 
+    function handleDragStart() {
+        if (isChampionValid) {
+            playSound(DragAudio);
+            isChampionMoving(index);
+        }
+    }
+
     useKeyboardShortcut(
         ["E"],
         () => mouseHover && moveChampionToDeleteZone(index)
@@ -76,7 +91,7 @@ export function BenchChampion({ id, champion, index }: BenchChampionProps) {
     drag(drop(ref));
 
     return (
-        <BenchChampionContainer ref={ref} data-handler-id={handlerId} onMouseEnter={handleHoverEnter} onMouseLeave={handleHoverLeave}>
+        <BenchChampionContainer ref={ref} data-handler-id={handlerId} onMouseEnter={handleHoverEnter} onMouseLeave={handleHoverLeave} onDragStart={handleDragStart}>
             {isChampionValid && (
                 <>
                     <img src={useImage(champion.champion.name, "champion-icon")} />
@@ -95,3 +110,5 @@ export function BenchChampion({ id, champion, index }: BenchChampionProps) {
         </BenchChampionContainer>
     );
 }
+
+export const BenchChampion = memo(BenchChampionComponent);

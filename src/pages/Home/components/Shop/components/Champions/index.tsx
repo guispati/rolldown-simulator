@@ -1,4 +1,4 @@
-import { memo, useRef } from "react";
+import { memo, useCallback, useRef } from "react";
 import { ShopContext } from "../../../../../../contexts/ShopContext";
 import { ChampionTile } from "./components/ChampionTile";
 import { ChampionsContainer, ChampionsWrapper, SellChampionContainer } from "./styles";
@@ -18,19 +18,16 @@ function ChampionsComponent() {
     const bench = useContextSelector(ShopContext, (context) => {
         return context.bench;
     });
+    const championMoving = useContextSelector(ShopContext, (context) => {
+        return context.championMoving;
+    });
     const ref = useRef<HTMLDivElement>(null);
 
-    const [{isDragging}, drop] = useDrop<
+    const [, drop] = useDrop<
         DragItem,
-        void,
-        { isDragging: DragItem }
+        void
     >({
         accept: ItemTypes.BENCHCHAMPION,
-        collect(monitor) {
-            return {
-                isDragging: monitor.getItem(),
-            }
-        },
         drop(item: DragItem) {
             if (!ref.current) {
                 return;
@@ -43,7 +40,7 @@ function ChampionsComponent() {
 
     drop(ref);
 
-    function checkCostBenchChampion(index: number) {
+    const checkCostBenchChampion = useCallback((index: number) => {
         const costUnit = bench[index].champion.value ? bench[index].champion.value : bench[index].champion.cost;
         const tier = bench[index].tier;
         const tierChampions = TIER_CHAMPIONS_QTD[tier-1];
@@ -53,13 +50,13 @@ function ChampionsComponent() {
             }
             return costUnit * tierChampions -1;
         }
-    }
+    }, [bench]);
 
     return (
         <ChampionsWrapper ref={ref}>
-            {isDragging ? (
+            {championMoving > -1 ? (
                 <SellChampionContainer>
-                    Sell for {checkCostBenchChampion(isDragging.index)} Gold
+                    Sell for {checkCostBenchChampion(championMoving)} Gold
                 </SellChampionContainer>
             ) : (
                 <ChampionsContainer>
