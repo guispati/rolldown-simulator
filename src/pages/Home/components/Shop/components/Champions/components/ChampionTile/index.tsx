@@ -2,15 +2,22 @@ import { ChampionImage, ChampionInfo, ChampionTileContainer, Trait, TraitBg, Tra
 import { GoldPrice } from "../../../../../../../../components/GoldPrice";
 import { Champion, ShopContext } from "../../../../../../../../contexts/ShopContext";
 import useImage from "../../../../../../../../hooks/useImage";
-import { useContext, useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
+import { useContextSelector } from "use-context-selector";
+
 
 interface ChampionTileProps {
     champion: Champion;
     championIndexOnArray: number;
 }
 
-export function ChampionTile({ champion, championIndexOnArray }: ChampionTileProps) {
-    const { buyChampion, gold } = useContext(ShopContext);
+function ChampionTileComponent({ champion, championIndexOnArray }: ChampionTileProps) {
+    const buyChampion = useContextSelector(ShopContext, (context) => {
+        return context.buyChampion;
+    });
+    const gold = useContextSelector(ShopContext, (context) => {
+        return context.gold;
+    });
     const [active, setActive] = useState<boolean>(true);
 
     const isChampionValid = champion.name === "" ? false : true;
@@ -49,3 +56,5 @@ export function ChampionTile({ champion, championIndexOnArray }: ChampionTilePro
         </ChampionTileContainer>
     );
 }
+
+export const ChampionTile = memo(ChampionTileComponent);

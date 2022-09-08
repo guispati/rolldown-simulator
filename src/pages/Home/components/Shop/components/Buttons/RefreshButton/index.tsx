@@ -1,11 +1,17 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { useContextSelector } from "use-context-selector";
 import { GoldPrice } from "../../../../../../../components/GoldPrice";
 import { ShopContext } from "../../../../../../../contexts/ShopContext";
 import { ButtonInfo } from "../styles";
 import { RefreshButtonContainer } from "./styles";
 
 export function RefreshButton() {
-    const { buyRoll, gold } = useContext(ShopContext);
+    const buyRoll = useContextSelector(ShopContext, (context) => {
+        return context.buyRoll;
+    });
+    const gold = useContextSelector(ShopContext, (context) => {
+        return context.gold;
+    });
     const [active, setActive] = useState<boolean>(true);
 
     useEffect(() => {

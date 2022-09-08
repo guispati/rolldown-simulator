@@ -4,8 +4,9 @@ import { BenchChampionContainer, Champion1Star, Champion2Star, Champion3Star, Ch
 import { useDrag, useDrop } from 'react-dnd';
 import type { Identifier } from 'dnd-core';
 import { DragItem, ItemTypes } from "../../../../../../libs/dnd";
-import { useContext, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import useKeyboardShortcut from "use-keyboard-shortcut";
+import { useContextSelector } from "use-context-selector";
 
 interface BenchChampionProps {
     id: string;
@@ -14,7 +15,12 @@ interface BenchChampionProps {
 }
 
 export function BenchChampion({ id, champion, index }: BenchChampionProps) {
-    const { moveChampionOnBench, moveChampionToDeleteZone } = useContext(ShopContext);
+    const moveChampionOnBench = useContextSelector(ShopContext, (context) => {
+        return context.moveChampionOnBench;
+    });
+    const moveChampionToDeleteZone = useContextSelector(ShopContext, (context) => {
+        return context.moveChampionToDeleteZone;
+    });
     const [mouseHover, setMouseHover] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
     const [{ handlerId }, drop] = useDrop<

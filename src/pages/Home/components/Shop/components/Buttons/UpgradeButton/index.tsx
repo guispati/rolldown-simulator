@@ -1,11 +1,20 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { GoldPrice } from "../../../../../../../components/GoldPrice";
 import { ShopContext } from "../../../../../../../contexts/ShopContext";
 import { ButtonInfo } from "../styles";
 import { UpgradeButtonContainer } from "./styles";
+import { useContextSelector } from "use-context-selector";
 
 export function UpgradeButton() {
-    const { buyExp, gold, level } = useContext(ShopContext);
+    const buyExp = useContextSelector(ShopContext, (context) => {
+        return context.buyExp;
+    });
+    const gold = useContextSelector(ShopContext, (context) => {
+        return context.gold;
+    });
+    const level = useContextSelector(ShopContext, (context) => {
+        return context.level;
+    });
     const [active, setActive] = useState<boolean>(true);
 
     useEffect(() => {

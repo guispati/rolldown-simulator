@@ -16,7 +16,9 @@
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "^18.2.0",
+    "scheduler": "^0.23.0",
     "styled-components": "^5.3.5",
+    "use-context-selector": "^1.4.1",
     "use-keyboard-shortcut": "^1.1.4",
     "uuid": "^8.3.2"
   },

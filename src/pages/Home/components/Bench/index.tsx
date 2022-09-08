@@ -1,11 +1,14 @@
-import { useContext } from "react";
+import { memo } from "react";
 import { ShopContext } from "../../../../contexts/ShopContext";
 import { BenchChampion } from "./components/BenchChampion";
 import { BenchContainer } from "./styles";
 import { v4 as uuidv4 } from 'uuid';
+import { useContextSelector } from "use-context-selector";
 
-export function Bench() {
-    const { bench } = useContext(ShopContext);
+export function BenchComponent() {
+    const bench = useContextSelector(ShopContext, (context) => {
+        return context.bench;
+    });
 
     return (
         <BenchContainer>
@@ -17,3 +20,5 @@ export function Bench() {
         </BenchContainer>
     );
 }
+
+export const Bench = memo(BenchComponent);

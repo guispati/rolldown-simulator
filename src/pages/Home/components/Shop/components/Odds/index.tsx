@@ -1,11 +1,14 @@
+import { useContextSelector } from "use-context-selector";
 import { Tier } from "./components/Tier";
 import { OddsContainer } from "./styles";
 import { ODDS_REROLL } from "../../../../../../data/constants.js";
-import { useContext } from "react";
+import { memo } from "react";
 import { ShopContext } from "../../../../../../contexts/ShopContext";
 
-export function Odds() {
-    const { level } = useContext(ShopContext);
+function OddsComponent() {
+    const level = useContextSelector(ShopContext, (context) => {
+        return context.level;
+    });
     
     return (
         <OddsContainer>
@@ -17,3 +20,5 @@ export function Odds() {
         </OddsContainer>
     );
 }
+
+export const Odds = memo(OddsComponent);

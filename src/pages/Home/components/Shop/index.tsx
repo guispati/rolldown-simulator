@@ -1,5 +1,3 @@
-import { useContext, useState } from "react";
-import { ShopContext } from "../../../../contexts/ShopContext";
 import { RefreshButton } from "./components/Buttons/RefreshButton";
 import { UpgradeButton } from "./components/Buttons/UpgradeButton";
 import { Champions } from "./components/Champions";

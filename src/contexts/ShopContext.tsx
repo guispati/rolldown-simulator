@@ -1,4 +1,5 @@
-import { createContext, ReactNode, useCallback, useEffect, useState } from "react";
+import { ReactNode, useCallback, useEffect, useState } from "react";
+import { createContext } from "use-context-selector";
 import { produce } from 'immer';
 import { EXP_THRESHOLD, ODDS_REROLL, TIER_CHAMPIONS_QTD, TOTAL_CHAMPIONS_IN_POOL } from "../data/constants";
 import { CHAMPION_LIST } from "../data/champions";
@@ -106,7 +107,6 @@ export function ShopContextProvider({ children }: ShopContextProviderProps) {
 
     const [bench, setBench] = useState<BenchType[]>(benchInitiator);
 
-
     useKeyboardShortcut(
         ["D"],
         () => buyRoll()
@@ -115,8 +115,6 @@ export function ShopContextProvider({ children }: ShopContextProviderProps) {
         ["F"],
         () => buyExp()
     );
-
-    // const levelNormalized = level as keyof typeof ODDS_REROLL;
 
     function buyExp() {
         if (gold < 4 || level >= 9) return;
@@ -210,13 +208,6 @@ export function ShopContextProvider({ children }: ShopContextProviderProps) {
         rerollShop();
     }, []);
 
-    // useEffect(() => {
-    //     console.log(championPool)
-    // }, [championPool]);
-
-    // useEffect(() => {
-    // }, [bench]);
-
     function benchLength() {
         let counter = 0;
         bench.forEach(benchChampion => {
@@ -246,7 +237,6 @@ export function ShopContextProvider({ children }: ShopContextProviderProps) {
             setBench(produce(draft => {
                 draft[indexChampionOnArrayToUpgrade].tier++;
                 draft[indexChampionOnArrayToRemove] = emptyChampionBench;
-                // draft.splice(indexChampionOnArrayToRemove, 1);
             }));
         } else {
             playSound(audio.ChampionLevelUpTier3Audio);
@@ -262,9 +252,6 @@ export function ShopContextProvider({ children }: ShopContextProviderProps) {
             draft[indexChampionOnArrayToRemove3] = emptyChampionBench;
             draft[indexChampionOnArrayToRemove2] = emptyChampionBench;
             draft[indexChampionOnArrayToRemove] = emptyChampionBench;
-            // draft.splice(indexChampionOnArrayToRemove3, 1);
-            // draft.splice(indexChampionOnArrayToRemove2, 1);
-            // draft.splice(indexChampionOnArrayToRemove, 1);
         }));
     }
 

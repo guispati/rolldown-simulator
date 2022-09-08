@@ -1,4 +1,4 @@
-import { useContext, useRef, useState } from "react";
+import { memo, useRef } from "react";
 import { ShopContext } from "../../../../../../contexts/ShopContext";
 import { ChampionTile } from "./components/ChampionTile";
 import { ChampionsContainer, ChampionsWrapper, SellChampionContainer } from "./styles";
@@ -6,9 +6,18 @@ import { v4 as uuidv4 } from 'uuid';
 import { useDrop } from "react-dnd";
 import { DragItem, ItemTypes } from "../../../../../../libs/dnd";
 import { TIER_CHAMPIONS_QTD } from "../../../../../../data/constants";
+import { useContextSelector } from "use-context-selector";
 
-export function Champions() {
-    const { store, moveChampionToDeleteZone, bench } = useContext(ShopContext);
+function ChampionsComponent() {
+    const store = useContextSelector(ShopContext, (context) => {
+        return context.store;
+    });
+    const moveChampionToDeleteZone = useContextSelector(ShopContext, (context) => {
+        return context.moveChampionToDeleteZone;
+    });
+    const bench = useContextSelector(ShopContext, (context) => {
+        return context.bench;
+    });
     const ref = useRef<HTMLDivElement>(null);
 
     const [{isDragging}, drop] = useDrop<
@@ -64,3 +73,5 @@ export function Champions() {
         </ChampionsWrapper>
     );
 }
+
+export const Champions = memo(ChampionsComponent);
