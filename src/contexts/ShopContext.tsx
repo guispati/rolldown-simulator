@@ -137,16 +137,15 @@ export function ShopContextProvider({ children }: ShopContextProviderProps) {
     }
 
     function buyChampion(champion: Champion, championPositionOnStoreArray: number) {
-        if (gold < champion.cost || benchLength() >= 9) return;
-        playSound(audio.BuyChampionAudio);
+        if (gold < champion.cost) return;
         const cost = champion.value ? champion.value : champion.cost;
-        setGold(gold - cost);
         const insertingChampion: BenchType = {
             champion: champion,
             tier: 1,
         }
         const checkUpgrade = checkChampionUpgrade(insertingChampion);
         if (!checkUpgrade) {
+            if (benchLength() >= 9) return;
             const indexToInsert = bench.findIndex(curr => curr.champion.name === "");
             if (indexToInsert >= 0) {
                 setBench(produce(draft => {
@@ -160,20 +159,22 @@ export function ShopContextProvider({ children }: ShopContextProviderProps) {
         } else {
             insertUpgradedChampion(insertingChampion);
         }
+        setGold(gold - cost);
+        playSound(audio.BuyChampionAudio);
 
         setStore(produce(draft => {
             draft[championPositionOnStoreArray] = emptyChampion;
         }));
     }
 
-    const moveChampionOnBench = useCallback((dragIndex: number, hoverIndex: number) => {
+    function moveChampionOnBench (dragIndex: number, hoverIndex: number) {
         playSound(audio.DropAudio);
         setBench(produce(draft => {
             [draft[hoverIndex], draft[dragIndex]] = [draft[dragIndex], draft[hoverIndex]];
         }));
-    }, []);
+    };
 
-    const moveChampionToDeleteZone = useCallback((dragIndex: number) => {
+    function moveChampionToDeleteZone(dragIndex: number) {
         const cost = checkCostBenchChampion(dragIndex);
         if (cost !== undefined) {
             setGold(gold + cost);
@@ -182,7 +183,7 @@ export function ShopContextProvider({ children }: ShopContextProviderProps) {
         setBench(produce(draft => {
             draft[dragIndex] = emptyChampionBench;
         }));
-    }, [gold]);
+    };
 
     function checkCostBenchChampion(index: number) {
         const costUnit = bench[index].champion.value ? bench[index].champion.value : bench[index].champion.cost;
