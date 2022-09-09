@@ -34,7 +34,7 @@ function ChampionTileComponent({ champion, championIndexOnArray }: ChampionTileP
         <ChampionTileContainer tier={champion.value ? champion.value : champion.cost} onClick={handleClickChampion}>
         {isChampionValid && (
             <>
-                <ChampionImage src={useImage(champion.name, "champion")} disabled={active} />
+                <ChampionImage src={useImage(champion.championId, "champion")} disabled={active} />
                 <Traits>
                     {champion.traits.map(trait => {
                         return (

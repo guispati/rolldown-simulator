@@ -31,8 +31,9 @@ export const ChampionName = styled.span<ChampionNameProps>`
     ${props => props.tier === 3 && 'background-position: -20px -740px;'}
     ${props => props.tier === 4 && 'background-position: -470px -740px;'}
     ${props => props.tier === 5 && 'background-position: -20px -900px;'}
-    ${props => props.tier === 8 && 'background-position: -10px -130px;'}
-    ${props => props.tier === 10 && 'background-position: -10px -300px;'}
+    ${props => props.tier === 6 && 'background-position: -20px -980px;'}
+    ${props => props.tier === 7 && 'background-position: -10px -130px;'}
+    ${props => props.tier === 8 && 'background-position: -10px -300px;'}
 `;
 
 const ChampionStar = styled.span`

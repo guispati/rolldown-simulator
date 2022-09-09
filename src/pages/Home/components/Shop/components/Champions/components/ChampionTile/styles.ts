@@ -20,8 +20,9 @@ export const ChampionTileContainer = styled.div<ChampionTileContainerProps>`
     ${props => props.tier === 3 && 'background-position: -20px -600px;'}
     ${props => props.tier === 4 && 'background-position: -465px -600px;'}
     ${props => props.tier === 5 && 'background-position: -20px -770px;'}
-    ${props => props.tier === 8 && 'background-position: -3px 1px;'}
-    ${props => props.tier === 10 && 'background-position: -3px -166px;'}
+    ${props => props.tier === 6 && 'background-position: -3px 179px;'}
+    ${props => props.tier === 7 && 'background-position: -3px 1px;'}
+    ${props => props.tier === 8 && 'background-position: -3px -166px;'}
 
     &:hover {
         ${props => props.tier >= 0 && props.tier <= 5 ? `background: url(${hud});` : `background: url(${dragonHud});`}
@@ -31,8 +32,9 @@ export const ChampionTileContainer = styled.div<ChampionTileContainerProps>`
         ${props => props.tier === 3 && 'background-position: -243px -600px;'}
         ${props => props.tier === 4 && 'background-position: -688px -600px;'}
         ${props => props.tier === 5 && 'background-position: -243px -770px;'}
-        ${props => props.tier === 8 && 'background-position: -221px 1px;'}
-        ${props => props.tier === 10 && 'background-position: -221px -166px;'}
+        ${props => props.tier === 6 && 'background-position: -221px 179px;'}
+        ${props => props.tier === 7 && 'background-position: -221px 1px;'}
+        ${props => props.tier === 8 && 'background-position: -221px -166px;'}
         cursor: pointer;
     }
 `;

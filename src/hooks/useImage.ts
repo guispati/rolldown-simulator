@@ -6,7 +6,7 @@ const useImage = (fileName: string, type: "champion" | "trait" | "champion-icon"
 
     useEffect(() => {
         const fetchImage = async () => {
-            const response = await import(`../assets/${folder}/${fileName.toLowerCase()}.png`);
+            const response = await import(`../assets/${folder}/${type === 'trait' ? fileName.toLowerCase() : fileName}.png`);
             setImage(response.default);
         }
 

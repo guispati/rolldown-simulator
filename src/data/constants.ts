@@ -1,4 +1,4 @@
-export const EXP_THRESHOLD = [0, 0, 2, 6, 10, 20, 32, 50, 66];
+export const EXP_THRESHOLD = [0, 0, 2, 6, 10, 20, 36, 56, 80];
 
 export const ODDS_REROLL = {
     2: [100, 0, 0, 0, 0],

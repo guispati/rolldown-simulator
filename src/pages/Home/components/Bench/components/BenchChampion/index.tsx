@@ -94,7 +94,7 @@ function BenchChampionComponent({ id, champion, index }: BenchChampionProps) {
         <BenchChampionContainer ref={ref} data-handler-id={handlerId} onMouseEnter={handleHoverEnter} onMouseLeave={handleHoverLeave} onDragStart={handleDragStart}>
             {isChampionValid && (
                 <>
-                    <img src={useImage(champion.champion.name, "champion-icon")} />
+                    <img src={useImage(champion.champion.championId, "champion-icon")} />
                     {champion.tier === 1 ? (
                         <Champion1Star />
                     ) : champion.tier === 2 ? (
