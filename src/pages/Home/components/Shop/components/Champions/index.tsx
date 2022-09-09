@@ -1,4 +1,4 @@
-import { memo, useCallback, useRef } from "react";
+import { useCallback, useRef } from "react";
 import { ShopContext } from "../../../../../../contexts/ShopContext";
 import { ChampionTile } from "./components/ChampionTile";
 import { ChampionsContainer, ChampionsWrapper, SellChampionContainer } from "./styles";
@@ -8,7 +8,7 @@ import { DragItem, ItemTypes } from "../../../../../../libs/dnd";
 import { TIER_CHAMPIONS_QTD } from "../../../../../../data/constants";
 import { useContextSelector } from "use-context-selector";
 
-function ChampionsComponent() {
+export function Champions() {
     const store = useContextSelector(ShopContext, (context) => {
         return context.store;
     });
@@ -70,5 +70,3 @@ function ChampionsComponent() {
         </ChampionsWrapper>
     );
 }
-
-export const Champions = memo(ChampionsComponent);

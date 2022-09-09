@@ -11,7 +11,13 @@ export const BenchChampionContainer = styled.div`
     > img {
         border-radius: 50%;
         width: 80%;
+        opacity: 0.9;
+        &:hover {
+            box-shadow: 0px 0px 20px rgba(255,255,255,0.8);
+            opacity: 1;
+        }
     }
+
 `;
 
 interface ChampionNameProps {
