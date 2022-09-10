@@ -1,6 +1,6 @@
 import { useContextSelector } from "use-context-selector";
 import { ShopContext } from "../../../../../../contexts/ShopContext";
-import { EXP_THRESHOLD } from "../../../../../../data/constants";
+import { EXP_THRESHOLD, ODDS_REROLL } from "../../../../../../data/constants";
 import { LevelContainer, LevelInfo } from "./styles";
 
 export function Level() {
@@ -16,7 +16,7 @@ export function Level() {
     const xp_text = (level === 9) ? "Max" : xp + "/" + EXP_THRESHOLD[level];
 
     function handleInputLevel(event: React.ChangeEvent<HTMLInputElement>) {
-        changeLevel(parseInt(event.target.value));
+        changeLevel(parseInt(event.target.value) as keyof typeof ODDS_REROLL);
     }
     
     return (
