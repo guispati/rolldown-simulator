@@ -24,4 +24,19 @@ export const LevelInfo = styled.div`
     span:last-child {
         font-size: 14px;
     }
+
+    input {
+        border: 0;
+        background: transparent;
+        width: 1.5rem;
+        color: #fff;
+        font-size: 22px;
+
+        cursor: text;
+
+        &::-webkit-outer-spin-button,
+        &::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+        }
+    }
 `;

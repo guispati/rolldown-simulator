@@ -7,6 +7,8 @@ import { useDrop } from "react-dnd";
 import { DragItem, ItemTypes } from "../../../../../../libs/dnd";
 import { TIER_CHAMPIONS_QTD } from "../../../../../../data/constants";
 import { useContextSelector } from "use-context-selector";
+import { LocaleType } from "../../../../../../locales/types";
+import useLanguage from "../../../../../../hooks/useLanguage";
 
 export function Champions() {
     const store = useContextSelector(ShopContext, (context) => {
@@ -21,6 +23,12 @@ export function Champions() {
     const championMoving = useContextSelector(ShopContext, (context) => {
         return context.championMoving;
     });
+    const language = useContextSelector(ShopContext, (context) => {
+        return context.language;
+    });
+
+    const languageText: LocaleType = useLanguage(language);
+
     const ref = useRef<HTMLDivElement>(null);
 
     const [, drop] = useDrop<
@@ -56,7 +64,7 @@ export function Champions() {
         <ChampionsWrapper ref={ref}>
             {championMoving > -1 ? (
                 <SellChampionContainer>
-                    Sell for {checkCostBenchChampion(championMoving)} Gold
+                    {languageText.sellChampionText} {checkCostBenchChampion(championMoving)} {languageText.goldText}
                 </SellChampionContainer>
             ) : (
                 <ChampionsContainer>

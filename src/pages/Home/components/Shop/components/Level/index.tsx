@@ -10,11 +10,19 @@ export function Level() {
     const xp = useContextSelector(ShopContext, (context) => {
         return context.xp;
     });
+    const changeLevel = useContextSelector(ShopContext, (context) => {
+        return context.changeLevel;
+    });
     const xp_text = (level === 9) ? "Max" : xp + "/" + EXP_THRESHOLD[level];
+
+    function handleInputLevel(event: React.ChangeEvent<HTMLInputElement>) {
+        changeLevel(parseInt(event.target.value));
+    }
+    
     return (
         <LevelContainer>
             <LevelInfo>
-                <span>Lvl. {level}</span>
+                <span>Lvl. <input type="number" onChange={handleInputLevel} value={level} /></span>
                 <span>{xp_text}</span>
             </LevelInfo>
         </LevelContainer>

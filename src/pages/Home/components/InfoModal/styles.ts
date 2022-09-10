@@ -29,6 +29,8 @@ export const Content = styled(Dialog.Content)`
     flex-direction: column;
     gap: 3rem;
 
+    text-align: justify;
+
     footer {
         font-size: 0.75rem;
         text-align: center;

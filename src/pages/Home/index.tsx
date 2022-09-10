@@ -7,6 +7,7 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import { Question } from 'phosphor-react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { InfoModal } from "./components/InfoModal";
+import { MultiLanguage } from "./components/MultiLanguage";
 
 export function Home() {
     return (
@@ -19,6 +20,7 @@ export function Home() {
                 <InfoModal />
             </Dialog.Root>
             <ShopContextProvider>
+                <MultiLanguage />
                 <DndProvider backend={HTML5Backend}>
                     <Bench />
                     <Shop />

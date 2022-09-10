@@ -18,6 +18,9 @@ function ChampionTileComponent({ champion, championIndexOnArray }: ChampionTileP
     const gold = useContextSelector(ShopContext, (context) => {
         return context.gold;
     });
+    const language = useContextSelector(ShopContext, (context) => {
+        return context.language;
+    });
     const [active, setActive] = useState<boolean>(true);
 
     const isChampionValid = champion.name === "" ? false : true;

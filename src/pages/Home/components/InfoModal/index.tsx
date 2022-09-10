@@ -19,7 +19,7 @@ export function InfoModal() {
 
                 <div>
                     <Title>Como jogar</Title>
-                    <p>Campeões podem ser comprados clicando em seus ícones no shop, fazendo eles aparecerem em seu banco. Esses campeões comprados podem ser movidos, trocados de posição ou vendidos de volta pra loja para ganhar gold. Os botões no lado esquerdo podem ser usados para comprar EXP ou roletar os campeões da loja. O gold exibido é na realidade um input então você pode manualmente editar o seu valor.</p>
+                    <p>Campeões podem ser comprados clicando em seus ícones no shop, fazendo eles aparecerem em seu banco. Esses campeões comprados podem ser movidos, trocados de posição ou vendidos de volta pra loja para ganhar gold. Os botões no lado esquerdo podem ser usados para comprar EXP ou roletar os campeões da loja. O gold exibido é na realidade um input então você pode manualmente editar o seu valor. O mesmo vale para o level.</p>
                     <p>Todas as bindings (atalhos no teclado) do jogo original se mantém as mesmas nesta versão para web. Portanto, você pode utilizar a tecla "D" para roletar, "F" para comprar EXP ou "E" em cima de um campeão no seu banco para vendê-lo.</p>
                 </div>
 
